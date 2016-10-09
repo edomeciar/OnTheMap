@@ -85,16 +85,16 @@
             </objects>
             <point key="canvasLocation" x="788" y="37"/>
         </scene>
-        <!--Root View Controller-->
+        <!--Table View Controller-->
         <scene sceneID="DKv-4N-aab">
             <objects>
-                <tableViewController id="PW5-Dj-SPg" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Students View" id="PW5-Dj-SPg" customClass="TableViewControlle" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="OkE-ky-sPE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ofg-dq-QFV">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="StudentTableViewCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="StudentTableViewCell" id="ofg-dq-QFV">
                                 <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ofg-dq-QFV" id="FcD-1u-RKs">
@@ -108,7 +108,10 @@
                             <outlet property="delegate" destination="PW5-Dj-SPg" id="HDv-Y9-Eoo"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="jrn-TE-B8z"/>
+                    <navigationItem key="navigationItem" title="Table View Controller" id="jrn-TE-B8z"/>
+                    <connections>
+                        <outlet property="StudentTableView" destination="OkE-ky-sPE" id="YPg-Rh-F3R"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nZJ-Q2-9gn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -131,10 +134,10 @@
             </objects>
             <point key="canvasLocation" x="1659" y="502"/>
         </scene>
-        <!--View Controller-->
+        <!--Map View Controller-->
         <scene sceneID="Lni-Fa-Cdg">
             <objects>
-                <viewController id="DJe-2B-7Q5" sceneMemberID="viewController">
+                <viewController id="DJe-2B-7Q5" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6cE-eo-F50"/>
                         <viewControllerLayoutGuide type="bottom" id="tTJ-FN-gdc"/>
@@ -144,17 +147,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Y0E-ke-KY9">
-                                <frame key="frameInset" minX="67" minY="269" width="240" height="128"/>
+                                <frame key="frameInset" minY="72" width="375" height="546"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="OdX-Pl-nwI"/>
+                    <connections>
+                        <outlet property="mapView" destination="Y0E-ke-KY9" id="VJw-Ga-vjN"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xp4-wr-Fmh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2617" y="503"/>
+            <point key="canvasLocation" x="2616.8000000000002" y="502.39880059970017"/>
         </scene>
         <!--Table-->
         <scene sceneID="d1a-KA-28y">

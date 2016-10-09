@@ -93,7 +93,7 @@ class UdacityClient : NSObject{
             
             self.sessionID = sessionId
             
-            self.getUserData()
+            
             
             completitionHandler(true, nil)
             
@@ -102,17 +102,32 @@ class UdacityClient : NSObject{
     }
     
     
-    func getUserData(){
+    func getUserData(completionHandlerForUserData: @escaping (_ result: [Student]?, _ error: NSError?) -> Void){
         
         let request = NSMutableURLRequest(url: NSURL(string: "https://parse.udacity.com/parse/classes/StudentLocation")! as URL)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error...
-                return
+            if let error = error {
+                completionHandlerForUserData(nil, error as NSError?)
+            } else {
+                var parsedResult: AnyObject!
+                do {
+                    parsedResult = try JSONSerialization.jsonObject(with: data! as Data, options: .allowFragments) as AnyObject!
+                } catch {
+                    let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
+                    completionHandlerForUserData(nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+                }
+                
+                if let results = parsedResult["results"] as? [[String:AnyObject]] {
+                    
+                    let movies = Student.studentsFromResult(results: results)
+                    completionHandlerForUserData(movies, nil)
+                } else {
+                    completionHandlerForUserData(nil, NSError(domain: "getUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse UserData"]))
+                }
             }
-            print(NSString(data: data!, encoding: String.Encoding.utf8.rawValue))
         }
         task.resume()
         
