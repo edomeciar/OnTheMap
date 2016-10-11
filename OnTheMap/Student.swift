@@ -10,17 +10,20 @@ struct Student{
     
     let uniqueKey: String
     let firstName: String
-    //let lastName: String
-    //let mapString: String
+    let lastName: String
+    let mapString: String
     let latitude: Double
     let longitude: Double
-    //let mediaURL: String
+    let mediaURL: String
     
     init(dictionary: [String: AnyObject]){
         uniqueKey = dictionary["uniqueKey"] as! String
         firstName = dictionary["firstName"] as! String
+        lastName = dictionary["lastName"] as! String
+        mapString = dictionary["mapString"] as! String
         latitude = dictionary["latitude"] as! Double
         longitude = dictionary["longitude"] as! Double
+        mediaURL = dictionary["mediaURL"] as! String
     }
     
     static var Students: [Student] = [Student]()

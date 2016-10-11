@@ -14,10 +14,31 @@ class MapViewController: UIViewController, MKMapViewDelegate{
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBAction func logoutButtonTouch(_ sender: AnyObject) {
+        UdacityClient.sharedInstance().deleteSession{ success, errorString in
+            DispatchQueue.main.async(execute: {
+                if success {
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    self.displayError(errorString)
+                }
+            })
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loadPins()
+    }
+    
+    func displayError(_ errorString: String?) {
+        guard let errorString = errorString else {
+            return
+        }
+        
+        let myAlert = UIAlertController(title: errorString, message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        myAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(myAlert, animated: true, completion: nil)
     }
     
     func loadPins() {
@@ -32,8 +53,8 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                     
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    annotation.title = "\(student.firstName)"
-                    
+                    annotation.title = "\(student.firstName) \(student.lastName)"
+                    annotation.subtitle = student.mediaURL
                     annotations.append(annotation)
                 }
                 
@@ -68,9 +89,8 @@ class MapViewController: UIViewController, MKMapViewDelegate{
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.openURL(URL(string: toOpen)!)
+                UIApplication.shared.openURL(URL(string: toOpen)!)
             }
         }
     }

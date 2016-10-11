@@ -22,12 +22,10 @@ extension UdacityClient{
         static let Query = "query"
     }
     
-    struct Methods {
-
-        static let AuthenticationTokenNew = "/authentication/token/new"
-        static let AuthenticationSessionNew = "/authentication/session/new"
- 
+    struct UdacityApiMethods {
+        static let getPublicUserDataUrl = "https://www.udacity.com/api/users/"
     }
+    
     
     // MARK: JSON Response Keys
     struct JSONResponseKeys {

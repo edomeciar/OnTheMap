@@ -13,6 +13,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
@@ -25,18 +26,48 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func SignInButtonTouch(_ sender: AnyObject) {
+        UIApplication.shared.openURL(URL(string: "https://www.udacity.com/account/auth#!/signup")!)
+    }
+    
+    func alertError(errorString: String?){
+        DispatchQueue.main.async(execute: {
+            if let errorString = errorString {
+                let myAlert = UIAlertController(title: errorString, message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                myAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                self.present(myAlert, animated: true, completion: nil)
+            }
+        })
+    }
+    
     @IBAction func loginButtonTouch(_ sender: AnyObject) {
         print("login start")
-        var username: String? = "eduard.meciar@gmail.com"
-        var password: String? = "cislokleslo"
+        loginActivityIndicator.startAnimating()
+        guard let login = loginTextField?.text , loginTextField.text != "" else {
+            self.alertError(errorString: "Email can't be empty")
+            return
+        }
         
-        UdacityClient.sharedInstance().createSesion(username: username!, password: password!, completitionHandler: {(success, errorString)in
+        guard let password = passwordTextField?.text , passwordTextField.text != "" else {
+            self.alertError(errorString: "Password can't be empty")
+            return
+        }
+
+        UdacityClient.sharedInstance().createSesion(username: login, password: password, completitionHandler: {(success, errorString)in
             if success{
-                print("login success")
-                let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
-                self.present(controller, animated: true, completion: nil)
+                UdacityClient.sharedInstance().getUdacityUserData(UdacityClient.sharedInstance().accountKey!) { (success, errorString) in
+                    if success {
+                        self.loginActivityIndicator.stopAnimating()
+                        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
+                        self.present(controller, animated: true, completion: nil)
+                    } else {
+                        self.alertError(errorString: errorString)
+                    }
+                }
+                
             }else{
-                print("login failed")
+                self.alertError(errorString: errorString)
+                self.loginActivityIndicator.stopAnimating()
             }
         })
         
