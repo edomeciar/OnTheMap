@@ -139,7 +139,7 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ofg-dq-QFV" id="FcD-1u-RKs">
-                                    <frame key="frameInset" width="375" height="43"/>
+                                    <frame key="frameInset" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -289,11 +289,14 @@
                                             <action selector="findButtonTouch:" destination="YLf-tG-Ztb" eventType="touchUpInside" id="nES-7a-ssk"/>
                                         </connections>
                                     </button>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="FM8-DB-59p"/>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="FM8-DB-59p" firstAttribute="top" secondItem="Vyg-42-XFE" secondAttribute="bottom" constant="8" id="GnM-49-lOx"/>
                                     <constraint firstItem="Vyg-42-XFE" firstAttribute="centerX" secondItem="nXW-tw-fEE" secondAttribute="centerX" id="b42-RU-F2h"/>
                                     <constraint firstItem="Vyg-42-XFE" firstAttribute="centerY" secondItem="nXW-tw-fEE" secondAttribute="centerY" id="j4a-RM-ycf"/>
+                                    <constraint firstItem="FM8-DB-59p" firstAttribute="centerX" secondItem="nXW-tw-fEE" secondAttribute="centerX" id="sGv-nI-Djs"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BQD-oF-u26" userLabel="Middle">
@@ -304,15 +307,12 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="FM8-DB-59p"/>
                                 </subviews>
                                 <color key="backgroundColor" red="0.21487759798518236" green="0.61594502766285097" blue="0.80060279187817263" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="ksT-67-oEM" firstAttribute="top" secondItem="BQD-oF-u26" secondAttribute="top" constant="40" id="0bE-tK-YbM"/>
                                     <constraint firstAttribute="trailing" secondItem="ksT-67-oEM" secondAttribute="trailing" constant="30" id="8gj-Gk-4g1"/>
-                                    <constraint firstItem="FM8-DB-59p" firstAttribute="centerX" secondItem="BQD-oF-u26" secondAttribute="centerX" id="Pbo-rn-Y1m"/>
                                     <constraint firstItem="ksT-67-oEM" firstAttribute="leading" secondItem="BQD-oF-u26" secondAttribute="leading" constant="30" id="VLw-f9-dRt"/>
-                                    <constraint firstItem="FM8-DB-59p" firstAttribute="centerY" secondItem="BQD-oF-u26" secondAttribute="centerY" id="mPc-sn-VVZ"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -396,18 +396,17 @@
                                     <action selector="submitButtonTouch:" destination="DUF-Be-f97" eventType="touchUpInside" id="r2g-BE-J8c"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="qUb-Ac-DaD" userLabel="SubmitAcitvityIndicator">
-                                <frame key="frameInset" minX="177" minY="435" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="qUb-Ac-DaD" userLabel="SubmitAcitvityIndicator"/>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="C7W-rx-4Fl" firstAttribute="top" secondItem="4qo-gp-QVa" secondAttribute="bottom" id="0BJ-fV-0Ry"/>
+                            <constraint firstItem="qUb-Ac-DaD" firstAttribute="top" secondItem="kFT-ML-02A" secondAttribute="bottom" constant="8" id="BkU-Sh-NNS"/>
                             <constraint firstItem="C7W-rx-4Fl" firstAttribute="centerX" secondItem="To5-2F-qC5" secondAttribute="centerX" id="D4S-34-RJ2"/>
                             <constraint firstItem="kFT-ML-02A" firstAttribute="centerX" secondItem="To5-2F-qC5" secondAttribute="centerX" id="QCb-nU-uKh"/>
                             <constraint firstItem="C7W-rx-4Fl" firstAttribute="leading" secondItem="4qo-gp-QVa" secondAttribute="leading" id="RM1-ZR-iXq"/>
                             <constraint firstItem="4qo-gp-QVa" firstAttribute="top" secondItem="To5-2F-qC5" secondAttribute="top" id="UHT-eO-alW"/>
+                            <constraint firstItem="qUb-Ac-DaD" firstAttribute="centerX" secondItem="To5-2F-qC5" secondAttribute="centerX" id="Xvf-03-Z5c"/>
                             <constraint firstItem="CRw-ps-jtv" firstAttribute="top" secondItem="kFT-ML-02A" secondAttribute="bottom" constant="60" id="cdn-8k-7IS"/>
                             <constraint firstItem="4qo-gp-QVa" firstAttribute="centerX" secondItem="To5-2F-qC5" secondAttribute="centerX" id="ouG-mQ-pmc"/>
                             <constraint firstItem="C7W-rx-4Fl" firstAttribute="leading" secondItem="To5-2F-qC5" secondAttribute="leading" id="vrf-rk-ecP"/>
@@ -449,6 +448,6 @@
         <image name="map" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="oL8-qQ-hBu"/>
+        <segue reference="D1z-lp-rYs"/>
     </inferredMetricsTieBreakers>
 </document>
