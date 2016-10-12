@@ -53,7 +53,7 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                     
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    annotation.title = "\(student.firstName) \(student.lastName)"
+                    annotation.title = "Name: \(student.firstName) \(student.lastName)"
                     annotation.subtitle = student.mediaURL
                     annotations.append(annotation)
                 }
@@ -62,7 +62,7 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                     self.mapView.addAnnotations(annotations)
                 }
             } else {
-                print(error)
+                self.displayError(error)
             }
         }
     }
@@ -94,7 +94,6 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                 return
             }
             UIApplication.shared.openURL(URL(string: url!)!)
-            
         }
     }
     
