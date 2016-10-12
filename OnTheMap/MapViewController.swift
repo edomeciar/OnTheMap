@@ -58,9 +58,9 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                     annotations.append(annotation)
                 }
                 
-                DispatchQueue.main.async {
-                    self.mapView.addAnnotations(annotations)
-                }
+                
+                self.mapView.addAnnotations(annotations)
+                
             } else {
                 self.displayError(error)
             }
@@ -76,7 +76,7 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinTintColor = .red
+            pinView!.pinColor = .red
             pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else {
@@ -86,16 +86,20 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         return pinView
     }
     
-
+    
+    // This delegate method is implemented to respond to taps. It opens the system browser
+    // to the URL specified in the annotationViews subtitle property.
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            guard let url = view.annotation?.subtitle else {
-                displayError("URL is empty for the selected point")
-                return
+            let app = UIApplication.shared
+            if let toOpen = view.annotation?.subtitle! {
+                app.openURL(URL(string: toOpen)!)
             }
-            UIApplication.shared.openURL(URL(string: url!)!)
         }
     }
+    
+
+    
     
     
 }
