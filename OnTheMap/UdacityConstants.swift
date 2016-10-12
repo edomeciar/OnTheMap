@@ -9,10 +9,8 @@
 extension UdacityClient{
     
     struct Constants{
-        static let ApiKey : String = "Udacity app key"
-        static let ApiScheme = "https"
-        static let ApiHost = "???"
-        static let ApiPath = "???"
+        static let UdacityApiUrl = "https://www.udacity.com/api/"
+        static let UdacityParseApiUrl = "https://parse.udacity.com/parse/classes/StudentLocation"
     }
     
     struct ParameterKeys {
@@ -23,13 +21,17 @@ extension UdacityClient{
     }
     
     struct UdacityApiMethods {
-        static let getPublicUserDataUrl = "https://www.udacity.com/api/users/"
+        static let getPublicUserDataUrl = "users/"
+        static let getSessionMethod = "session"
+        static let getPublicUserDataMethod = "users"
     }
     
     
     // MARK: JSON Response Keys
     struct JSONResponseKeys {
-        static let RequestToken = "request_token"
-        static let SessionID = "session_id"
+        static let Account = "account"
+        static let Session = "session"
+        static let Key = "key"
+        static let Id = "id"
     }
 }

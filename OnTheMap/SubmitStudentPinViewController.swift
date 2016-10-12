@@ -15,12 +15,20 @@ class SubmitStudentPinViewController: UIViewController, MKMapViewDelegate{
     
     @IBOutlet weak var submitUrlText: UITextField!
     @IBOutlet weak var submitMapView: MKMapView!
+    @IBOutlet weak var submitActivityIndicator: UIActivityIndicatorView!
     
     override func viewWillAppear(_ animated: Bool) {
         showMapPin()
+        cleanSubmitView()
     }
     @IBAction func cancelButtonTouch(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: nil)
+        cleanSubmitView()
+    }
+    
+    private func cleanSubmitView(){
+        submitActivityIndicator.stopAnimating()
+        submitUrlText.text = ""
     }
     
     @IBAction func submitButtonTouch(_ sender: AnyObject) {
@@ -36,6 +44,7 @@ class SubmitStudentPinViewController: UIViewController, MKMapViewDelegate{
                     self.displayMessage("Your information has been successfully posted!") { (alertAction) in
                         DispatchQueue.main.async(execute: {
                             self.presentingViewController?.presentingViewController?.dismiss(animated: false, completion: nil)
+                            self.cleanSubmitView()
                         })
                     }
                 } else {

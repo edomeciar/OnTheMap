@@ -26,7 +26,7 @@ class UdacityClient : NSObject{
     var lastName: String!
     
     func createSesion(username: String, password: String, completitionHandler:@escaping (_ success: Bool, _ error: String?)-> Void){
-        let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/session")!)
+        let request = NSMutableURLRequest(url: URL(string: UdacityClient.Constants.UdacityApiUrl + UdacityClient.UdacityApiMethods.getSessionMethod)!)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -38,52 +38,45 @@ class UdacityClient : NSObject{
             
             data, response, error in
             if error != nil {
-                completitionHandler(false,"Log in Failed (Session Id Data Error)")
+                completitionHandler(false,"Login Failed (\(error?.localizedDescription))")
                 return
             }
-            
-            
             
             guard let data = data else {
-                print("No data was returned by the request!")
+                completitionHandler(false,"Login Failed (No response from server)")
                 return
             }
+            
+            //found this solution on the udacity forum
             let dataLength = data.count
             let r = 5...Int(dataLength)
             let newData = data.subdata(in: Range(r)) /* subset response data! */
+            
             var parsedResult: AnyObject
+            let parsedErrorString = "Login Failed (Wrong response from server)"
             do {
                 parsedResult = try JSONSerialization.jsonObject(with: newData, options: .allowFragments) as AnyObject
             } catch {
-                print("Could not parse the data as JSON: '\(newData)'")
-                
+                completitionHandler(false,parsedErrorString)
                 return
             }
             
-            guard let accountDict = parsedResult["account"] as? [String: AnyObject] else {
-                print("Can't find key 'account' in \(parsedResult)")
-                completitionHandler(false, "Login Failed (Wrong response from server")
+            guard let accountDict = parsedResult[UdacityClient.JSONResponseKeys.Account] as? [String: AnyObject] else {
+                completitionHandler(false, parsedErrorString)
                 return
             }
             
-            guard let accountKey = accountDict["key"] as? String else {
-                print("Can't find key 'account[key]' in \(parsedResult)")
-                completitionHandler(false, "Login Failed (Wrong response from server")
+            guard let accountKey = accountDict[UdacityClient.JSONResponseKeys.Key] as? String else {
+                completitionHandler(false, parsedErrorString)
+                return
+            }
+            guard let sessionDict = parsedResult[UdacityClient.JSONResponseKeys.Session] as? [String: AnyObject] else {
+                completitionHandler(false, parsedErrorString)
                 return
             }
             
-            
-            print("accountKey:\(accountKey)")
-            
-            guard let sessionDict = parsedResult["session"] as? [String: AnyObject] else {
-                print("Can't find key 'session' in \(parsedResult)")
-                completitionHandler(false, "Login Failed (Wrong response from server")
-                return
-            }
-            
-            guard let sessionId = sessionDict["id"] as? String else {
-                print("Can't find key 'session[id]' in \(parsedResult)")
-                completitionHandler(false, "Login Failed (Wrong response from server")
+            guard let sessionId = sessionDict[UdacityClient.JSONResponseKeys.Id] as? String else {
+                completitionHandler(false, parsedErrorString)
                 return
             }
             self.accountKey = accountKey
@@ -95,7 +88,7 @@ class UdacityClient : NSObject{
     }
     
     func deleteSession( _ completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void ){
-        let request = NSMutableURLRequest(url: NSURL(string: "https://www.udacity.com/api/session")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: UdacityClient.Constants.UdacityApiUrl + UdacityClient.UdacityApiMethods.getSessionMethod)! as URL)
         request.httpMethod = "DELETE"
         var xsrfCookie: HTTPCookie? = nil
         let sharedCookieStorage = HTTPCookieStorage.shared
@@ -110,28 +103,27 @@ class UdacityClient : NSObject{
             
             data, response, error in
             if error != nil {
-                completionHandler(false,"Logout Failed (Session Id Data Error)")
+                completionHandler(false,"Logout Failed (\(error?.localizedDescription))")
                 return
             }
             
             guard let data = data else {
-                print("No data was returned by the request!")
+                completionHandler(false,"Logout Failed (NO Data from server)")
                 return
             }
             let dataLength = data.count
             let r = 5...Int(dataLength)
             let newData = data.subdata(in: Range(r)) /* subset response data! */
             var parsedResult: AnyObject!
+            let parsedErrorString = "Logout Failed (Wrong response from server)"
             do {
                 parsedResult = try JSONSerialization.jsonObject(with: newData, options: .allowFragments) as AnyObject
             } catch {
-                print("Could not parse the data as JSON: '\(newData)'")
-                completionHandler(false, "Logout Failed (Wrong response from server")
+                completionHandler(false, parsedErrorString)
                 return
             }
-            guard let _ = parsedResult["session"] as? [String: AnyObject] else {
-                print("Can't find key 'session' in \(parsedResult)")
-                completionHandler(false, "Logout Failed (Wrong response from server")
+            guard let _ = parsedResult[UdacityClient.JSONResponseKeys.Session] as? [String: AnyObject] else {
+                completionHandler(false, parsedErrorString)
                 return
             }
             self.accountKey = ""
@@ -142,30 +134,32 @@ class UdacityClient : NSObject{
         task.resume()
     }
     
-    func getUserData(completionHandlerForUserData: @escaping (_ result: [Student]?, _ error: NSError?) -> Void){
+    func getUserData(completionHandlerForUserData: @escaping (_ result: [Student]?, _ error: String?) -> Void){
         
-        let request = NSMutableURLRequest(url: NSURL(string: "https://parse.udacity.com/parse/classes/StudentLocation")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: UdacityClient.Constants.UdacityParseApiUrl)! as URL)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if let error = error {
-                completionHandlerForUserData(nil, error as NSError?)
+                completionHandlerForUserData(nil, "Get Students Failed \(error.localizedDescription))")
             } else {
-                var parsedResult: AnyObject!
-                do {
-                    parsedResult = try JSONSerialization.jsonObject(with: data! as Data, options: .allowFragments) as AnyObject!
-                } catch {
-                    let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
-                    completionHandlerForUserData(nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+                guard let data = data else {
+                    completionHandlerForUserData(nil, "Get Students Failed (NO Data from server)")
+                    return
                 }
-                
+                var parsedResult: AnyObject!
+                let parsedErrorString = "Get Students Failed (Wrong response from server)"
+                do {
+                    parsedResult = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments) as AnyObject!
+                } catch {
+                    completionHandlerForUserData(nil, parsedErrorString)
+                }
                 if let results = parsedResult["results"] as? [[String:AnyObject]] {
-                    
                     let movies = Student.studentsFromResult(results: results)
                     completionHandlerForUserData(movies, nil)
                 } else {
-                    completionHandlerForUserData(nil, NSError(domain: "getUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse UserData"]))
+                    completionHandlerForUserData(nil,parsedErrorString)
                 }
             }
         }
@@ -174,20 +168,19 @@ class UdacityClient : NSObject{
     }
     
     func getUdacityUserData(_ accountKey: String!, completionHandlerForUdacityUserData: @escaping (_ success: Bool, _ error: String?) -> Void){
-        let request = NSMutableURLRequest(url: URL(string: UdacityClient.UdacityApiMethods.getPublicUserDataUrl + accountKey)!)
+        let request = NSMutableURLRequest(url: URL(string: UdacityClient.Constants.UdacityApiUrl + UdacityClient.UdacityApiMethods.getPublicUserDataUrl + accountKey)!)
         
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest){
             
             data, response, error in
             if error != nil { // Handle error…
-                completionHandlerForUdacityUserData(false, "Getting Public User Data failed \(accountKey)")
+                completionHandlerForUdacityUserData(false, "Getting Public User Info Failed (\(error?.localizedDescription))")
                 return
             }
             
             guard let data = data else {
-                print("Data are empty")
-                completionHandlerForUdacityUserData(false, "Data are empty")
+                completionHandlerForUdacityUserData(false, "Getting Public User Info Failed (NO Data from server)")
                 return
             }
             
@@ -196,29 +189,26 @@ class UdacityClient : NSObject{
             let newData = data.subdata(in: Range(r)) /* subset response data! */
             
             var parsedResult: AnyObject!
+            let parsedErrorString = "Getting Public User Info Failed (Wrong response from server)"
             do {
                 parsedResult = try JSONSerialization.jsonObject(with: newData, options: .allowFragments) as AnyObject
             } catch {
-                print("Could not parse the data as JSON: '\(newData)'")
-                completionHandlerForUdacityUserData(false, "Public User Data (Wrong response from server")
+                completionHandlerForUdacityUserData(false, parsedErrorString)
                 return
             }
             
             guard let user = parsedResult["user"] as? [String: AnyObject] else {
-                print("Can't find key 'user' in \(parsedResult)")
-                completionHandlerForUdacityUserData(false, "Public User Data (Wrong response from server")
+                completionHandlerForUdacityUserData(false, parsedErrorString)
                 return
             }
-            
+    
             guard let firstName = user["first_name"] as? String, let lastName = user["last_name"] as? String else {
-                print("Can't find key 'first_name' or 'last_name' in \(user)")
-                completionHandlerForUdacityUserData(false, "Public User Data (Wrong response from server")
+                completionHandlerForUdacityUserData(false, parsedErrorString)
                 return
             }
             
             self.firstName = firstName
             self.lastName = lastName
-            print("Udacity User:\(firstName) \(lastName)")
             
             completionHandlerForUdacityUserData(true, nil)
             
@@ -229,48 +219,29 @@ class UdacityClient : NSObject{
         
     }
     // given raw JSON, return a usable Foundation object
-    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (_ result: Any?, _ error: NSError?) -> Void) {
+    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (_ result: Any?, _ error: String?) -> Void) {
         
         var parsedResult: Any!
         do {
             parsedResult = try JSONSerialization.jsonObject(with: data as Data, options: .allowFragments)
         } catch {
-            let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
-            completionHandlerForConvertData(nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+            completionHandlerForConvertData(nil, "Could not parse the data as JSON")
         }
-        
         completionHandlerForConvertData(parsedResult, nil)
     }
     
     
-    // create a URL from parameters
-    private func udacityURLFromParameters(parameters: [String:AnyObject], withPathExtension: String? = nil) -> NSURL {
-        
-        let components = NSURLComponents()
-        components.scheme = UdacityClient.Constants.ApiScheme
-        components.host = UdacityClient.Constants.ApiHost
-        components.path = UdacityClient.Constants.ApiPath + (withPathExtension ?? "")
-        components.queryItems = [NSURLQueryItem]() as [URLQueryItem]?
-        
-        for (key, value) in parameters {
-            let queryItem = NSURLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem as URLQueryItem)
-        }
-        
-        return components.url! as NSURL
-    }
-    
     func postStudentPin(_ mapPin: MapPin, completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void ){
-        
-        print("account key\(self.accountKey)")
-        
-        let request = NSMutableURLRequest(url: NSURL(string: "https://parse.udacity.com/parse/classes/StudentLocation")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: UdacityClient.Constants.UdacityParseApiUrl)! as URL)
         request.httpMethod = "POST"
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"uniqueKey\": \"\(self.accountKey)\", \"firstName\": \"\(self.firstName)\", \"lastName\": \"\(self.lastName)\",\"mapString\": \"\(mapPin.locationName!))\", \"mediaURL\": \"\(mapPin.mediaURL!)\",\"latitude\": \(mapPin.latitude), \"longitude\": \(mapPin.longitude)}".data(using: String.Encoding.utf8)
+        let httpBodyString = "{\"uniqueKey\": \"\(self.accountKey!)\", \"firstName\": \"\(self.firstName!)\", \"lastName\": \"\(self.lastName!)\",\"mapString\": \"\(mapPin.locationName!))\", \"mediaURL\": \"\(mapPin.mediaURL!)\",\"latitude\": \(mapPin.latitude), \"longitude\": \(mapPin.longitude)}"
+        request.httpBody = httpBodyString.data(using: String.Encoding.utf8)
         let session = URLSession.shared
+        print(request.httpBody)
+        
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             if error != nil {
                 completionHandler(false, "Submitting failed \(error?.localizedDescription)")
@@ -282,10 +253,11 @@ class UdacityClient : NSObject{
             }
             
             var parsedResult: AnyObject!
+            let parsedErrorString = "Submitting failed (Wrong response from server"
             do {
                 parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
             } catch {
-                completionHandler(false, "Submitting failed (Wrong response from server")
+                completionHandler(false, parsedErrorString)
                 return
             }
             print(parsedResult)
@@ -296,8 +268,7 @@ class UdacityClient : NSObject{
             }
             
             guard let _ = parsedResult["objectId"] as? String else {
-                print("Can't find key 'objectId' in \(parsedResult)")
-                completionHandler(false, "Submitting Failed (Wrong response from server")
+                completionHandler(false, parsedErrorString)
                 return
             }
             

@@ -20,6 +20,16 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
+    
+    private func loginComplete(){
+        DispatchQueue.main.async(execute: {
+            self.loginTextField.text = ""
+            self.passwordTextField.text = ""
+            self.loginActivityIndicator.stopAnimating()
+            let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
+            self.present(controller, animated: true, completion: nil)
+        })
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -36,12 +46,12 @@ class LoginViewController: UIViewController {
                 let myAlert = UIAlertController(title: errorString, message: nil, preferredStyle: UIAlertControllerStyle.alert)
                 myAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 self.present(myAlert, animated: true, completion: nil)
+                self.loginActivityIndicator.stopAnimating()
             }
         })
     }
     
     @IBAction func loginButtonTouch(_ sender: AnyObject) {
-        print("login start")
         loginActivityIndicator.startAnimating()
         guard let login = loginTextField?.text , loginTextField.text != "" else {
             self.alertError(errorString: "Email can't be empty")
@@ -57,9 +67,7 @@ class LoginViewController: UIViewController {
             if success{
                 UdacityClient.sharedInstance().getUdacityUserData(UdacityClient.sharedInstance().accountKey!) { (success, errorString) in
                     if success {
-                        self.loginActivityIndicator.stopAnimating()
-                        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
-                        self.present(controller, animated: true, completion: nil)
+                        self.loginComplete()
                     } else {
                         self.alertError(errorString: errorString)
                     }
@@ -67,7 +75,6 @@ class LoginViewController: UIViewController {
                 
             }else{
                 self.alertError(errorString: errorString)
-                self.loginActivityIndicator.stopAnimating()
             }
         })
         
