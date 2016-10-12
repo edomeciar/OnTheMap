@@ -89,9 +89,12 @@ class MapViewController: UIViewController, MKMapViewDelegate{
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            if let toOpen = view.annotation?.subtitle! {
-                UIApplication.shared.openURL(URL(string: toOpen)!)
+            guard let url = view.annotation?.subtitle else {
+                displayError("URL is empty for the selected point")
+                return
             }
+            UIApplication.shared.openURL(URL(string: url!)!)
+            
         }
     }
     

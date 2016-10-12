@@ -33,7 +33,7 @@ class TableViewControlle: UITableViewController{
                     self.StudentTableView.reloadData()
                 }
             } else {
-                print(error)
+                self.displayError(error)
             }
         }
     }
@@ -70,13 +70,13 @@ class TableViewControlle: UITableViewController{
         let selectedSudent = Student.Students[indexPath.row]
         
         guard let url = selectedSudent.mediaURL as? String else {
-            print("URL is empty for the selected Student")
+            displayError("URL is empty for the selected Student")
             return
         }
         let trimmedUrl = url.trimmingCharacters(in: CharacterSet.whitespaces)
         
         guard let nsurl = URL(string: trimmedUrl) else {
-            print("URL is invalid.")
+            displayError("URL is invalid.")
             return
         }
         
