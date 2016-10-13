@@ -26,6 +26,11 @@ extension UdacityClient{
         static let getPublicUserDataMethod = "users"
     }
     
+    struct UdacityParseApiMethodsParameters{
+        static let limit100 = "limit=100"
+        static let orderUpdateAt = "order=-updatedAt"
+    }
+    
     
     // MARK: JSON Response Keys
     struct JSONResponseKeys {
