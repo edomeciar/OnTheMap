@@ -42,6 +42,10 @@ class MapViewController: UIViewController, MKMapViewDelegate{
     
     func loadPins() {
         UdacityClient.sharedInstance().getUserData(){ (students, error) in
+            guard let error = error else{
+                self.displayError("Loading Students Pins into the map Failed")
+                return
+            }
             if let students = students {
                 var annotations = [MKPointAnnotation]()
                 
