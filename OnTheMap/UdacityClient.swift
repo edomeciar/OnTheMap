@@ -136,7 +136,7 @@ class UdacityClient : NSObject{
     
     func getUserData(completionHandlerForUserData: @escaping (_ result: [Student]?, _ error: String?) -> Void){
         
-        let request = NSMutableURLRequest(url: NSURL(string: UdacityClient.Constants.UdacityParseApiUrl)! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: UdacityClient.Constants.UdacityParseApiUrl+"?"+UdacityClient.UdacityParseApiMethodsParameters.limit100+"&"+UdacityClient.UdacityParseApiMethodsParameters.orderUpdateAt)! as URL)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         let session = URLSession.shared
@@ -156,8 +156,8 @@ class UdacityClient : NSObject{
                     completionHandlerForUserData(nil, parsedErrorString)
                 }
                 if let results = parsedResult["results"] as? [[String:AnyObject]] {
-                    let movies = Student.studentsFromResult(results: results)
-                    completionHandlerForUserData(movies, nil)
+                    let students = Student.studentsFromResult(results: results)
+                    completionHandlerForUserData(students, nil)
                 } else {
                     completionHandlerForUserData(nil,parsedErrorString)
                 }
