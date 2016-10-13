@@ -21,6 +21,12 @@ class SubmitStudentPinViewController: UIViewController, MKMapViewDelegate{
         showMapPin()
         cleanSubmitView()
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround()
+    }
+    
     @IBAction func cancelButtonTouch(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: nil)
         cleanSubmitView()

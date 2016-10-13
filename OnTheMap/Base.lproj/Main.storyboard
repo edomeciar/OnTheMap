@@ -339,8 +339,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="LocationTextField" destination="ksT-67-oEM" id="uSn-h8-miA"/>
                         <outlet property="findOnTheMapActivity" destination="FM8-DB-59p" id="RM6-6J-KbM"/>
+                        <outlet property="locationTextField" destination="ksT-67-oEM" id="IKD-Pd-8VB"/>
                         <segue destination="DUF-Be-f97" kind="show" identifier="shareUrl" id="ClP-P5-Q4N"/>
                     </connections>
                 </viewController>
@@ -400,7 +400,7 @@
                                     <action selector="submitButtonTouch:" destination="DUF-Be-f97" eventType="touchUpInside" id="r2g-BE-J8c"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="qUb-Ac-DaD" userLabel="SubmitAcitvityIndicator"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="qUb-Ac-DaD" userLabel="SubmitAcitvityIndicator"/>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
