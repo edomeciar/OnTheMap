@@ -11,6 +11,7 @@ import CoreLocation
 
 class FindOntTheMapViewController: UIViewController{
     
+    
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var findOnTheMapActivity: UIActivityIndicatorView!
     
@@ -18,6 +19,7 @@ class FindOntTheMapViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround()
         geocoder = CLGeocoder()
         cleanMapView()
     }
@@ -32,13 +34,16 @@ class FindOntTheMapViewController: UIViewController{
         cleanMapView()
     }
     
+    
+    
+    
     @IBAction func findButtonTouch(_ sender: AnyObject) {
         findOnTheMapActivity.startAnimating()
         let location = locationTextField.text!
         if location != ""{
             geocoder.geocodeAddressString(location, completionHandler: { (placemarks, error) in
                 if error != nil{
-                    self.displayError("eror geocoder -> locatino")
+                    self.displayError("Couldn't recognize the address!")
                     return
                 }
                 guard let placemarks = placemarks else {
@@ -62,8 +67,10 @@ class FindOntTheMapViewController: UIViewController{
                 self.performSegue(withIdentifier: "shareUrl", sender: pin)
                 self.cleanMapView()
             })
-            
-            
+
+        }
+        else{
+            self.displayError("Location can't be empty")
         }
     }
     
