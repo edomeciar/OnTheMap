@@ -42,7 +42,7 @@ class MapViewController: UIViewController, MKMapViewDelegate{
     
     func loadPins() {
         UdacityClient.sharedInstance().getUserData(){ (students, error) in
-            guard let error = error else{
+            if error != nil {
                 self.displayError("Loading Students Pins into the map Failed")
                 return
             }
@@ -60,9 +60,9 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                     annotation.subtitle = student.mediaURL
                     annotations.append(annotation)
                 }
-                
-                
-                self.mapView.addAnnotations(annotations)
+                DispatchQueue.main.async {
+                    self.mapView.addAnnotations(annotations)
+                }
                 
             } else {
                 self.displayError(error)
