@@ -16,11 +16,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginActivityIndicator: UIActivityIndicatorView!
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
     private func loginComplete(){
         DispatchQueue.main.async(execute: {
             self.loginTextField.text = ""
@@ -29,11 +24,6 @@ class LoginViewController: UIViewController {
             let controller = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
             self.present(controller, animated: true, completion: nil)
         })
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     @IBAction func SignInButtonTouch(_ sender: AnyObject) {
